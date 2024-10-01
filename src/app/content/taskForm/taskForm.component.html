@@ -1,0 +1,64 @@
+
+@if(message){
+  <p class="info">{{message}}</p>
+}
+<form [formGroup]="form" (ngSubmit)="handleSubmit()" class="creatingForm">
+ 
+  <div class="creatingForm__divider" >
+<label for="title">Title:</label>
+<input  (blur)="updateTitleMessage()" id="title" type="text" formControlName="title">
+</div>
+@if (title.invalid) {
+  <div class=" bg-red-600 text-center">
+    <mat-error class="text-center">{{error().title}}</mat-error>
+  </div>
+
+}
+<div formGroupName="terms" class="creatingForm__divider" (blur)="updateTermsMessage()">
+  <label for="created">created at: </label>
+  <input id="created" type="date" formControlName="createdAt">
+
+    <label for="dedline">deadline: </label>
+    <input  id="deadline" type="date" formControlName="deadline">
+
+</div>
+@if (terms.invalid) {
+  <div class=" bg-red-600 text-center">
+    <mat-error class="text-center">{{error().terms}}</mat-error>
+  </div>
+}
+
+  <div class="creatingForm__divider"> 
+    <label for="content">content: </label>
+    <textarea  id="content" formControlName="content" (blur)="updateContentMessage()" class="min-w-full max-w-full min-h-28 max-h-28 text-sm"></textarea>
+   
+    
+  </div>
+  @if (content.invalid) {
+    <div class=" bg-red-600 text-center">
+      <mat-error class="text-center">{{error().content}}</mat-error>
+    </div>
+  }
+    
+   <div class="creatingForm__divider">
+    <label for="workers"> Worker</label>
+    <select id="workers" name="workers" formControlName="workers" (blur)="updateWorkersMessage()">
+      @for(worker of workersList();track $index){
+      <option [value]="worker.id"> {{worker.firstName}} {{worker.lastName}} </option>
+      }
+    </select>
+   </div>
+   @if (workers.invalid) {
+    <div class=" bg-red-600 text-center">
+      <mat-error class="text-center">{{error().workers}}</mat-error>
+    </div>
+  }
+   
+    
+    
+
+    <button [disabled]="form.invalid" class='button rounded-lg block ml-auto my-4' [class]="form.invalid?' button--disabled':' hover:text-green-700'"> Submit </button>
+
+
+
+</form>
