@@ -24,12 +24,14 @@
     </div>
   
   }
-  <div class="creatingForm__divider" >
+  <div class="creatingForm__divider items-center" >
     <label for="avatar">avatar:</label>
-    <input  (change)="onInsertImage($event)" id="avatar" type="file"  >
+    <input style="display:none" (change)="onInsertImage($event)" id="avatar" type="file" #avatarInput/>
+   <button type="button" class='button rounded-lg block mr-auto' (click)="avatarInput.click()"> Choose avatar</button> 
     </div>
     @if(filePath){
-      <img [src]="filePath" />
+      <p class="info">avatar's preview</p>
+      <img class="w-[100px] h-[100px]" [src]="filePath" />
     }
 
 

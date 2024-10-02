@@ -36,20 +36,25 @@ this._state.set("content",()=>value);
       'http://localhost:3000/admin/workers'
     );
   }
+  addWorkerToManager(worker:Worker){
+this._state.set("workers",({workers})=>[...workers,worker])
+console.log("CURRENT WORKERS: ",this._state.get("workers"));
+  }
   createTask(task:Task){
 return this._httpClient.post<{ message:string }>(
   'http://localhost:3000/admin/tasks',{task}
 );
   }
-  addWorker(firstName:string,lastName:string,image:File){
+  createWorker(firstName:string,lastName:string,image:File, randomAvatar:boolean){
+    console.log("randomAvatar: ",randomAvatar);
+    if(randomAvatar){
+      return this._httpClient.post<{message:string,worker:Worker}>('http://localhost:3000/admin/workers/default',{firstName,lastName});
+    }
     const workerData=new FormData();
     workerData.append("firstName",firstName);
     workerData.append("lastName",lastName);
-    workerData.append("image",image,`${firstName} ${lastName}`)
-this._httpClient.post<{message:string}>('http://localhost:3000/admin/workers',workerData).subscribe({
-  next:(resp)=>console.log(resp.message),
-  error:(err)=>console.log(err)
-})
+   workerData.append("image",image,`${firstName} ${lastName}`)
+return this._httpClient.post<{message:string,worker:Worker}>('http://localhost:3000/admin/workers',workerData);
 
   }
 }
