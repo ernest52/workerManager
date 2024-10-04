@@ -28,7 +28,10 @@ rangeValues=signal({
 });
 randomAvatar=true;
 
-message="";
+message={
+  info:"",
+  avatar:"preview"
+};
 destroyRef=inject(DestroyRef);
 _workersRepo=inject(WorkersService);
  error=signal({
@@ -57,6 +60,8 @@ image:new FormControl({}),
  }
  onInsertImage(event:Event){
   const button=event.target as HTMLInputElement;
+  console.log("BUTTON: ",button?.files);
+  console.dir(button?.files);
   if(button!==null && button.files!==null){
 const file=button.files[0];
 this.form.patchValue({image:file});
@@ -78,20 +83,21 @@ reader.readAsDataURL(file);
 
     this._workersRepo.createWorker(<string>value.firstName ,<string>value.lastName ,<File>value.image,this.randomAvatar ).subscribe({
       next:(resp)=>{
-        console.log(resp),
         
-        this.message=resp.message;
+        this.message={info:resp.message,avatar:"selected"};
         this._workersRepo.addWorkerToManager(resp.worker);
+        this.filePath="";
+        this.form.reset();
+        this.form.patchValue({image:resp.worker.avatar?.url || resp.worker?.image})
+        this.filePath=resp.worker.avatar?.url || resp.worker?.image || "";
+        this.error.update(()=>({firstName:"",lastName:""}))
       },
       error:(err)=>{
         console.log(err)
         this._workersRepo.setError(err?.error.message||err?.message || "server response failed")
       }
     })
-    this.filePath="";
-        this.form.reset();
-        this.form.patchValue({image:false});
-        this.error.update(()=>({firstName:"",lastName:""}))
+  
 
   }
 

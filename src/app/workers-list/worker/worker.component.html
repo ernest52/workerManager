@@ -2,7 +2,7 @@
   <div class="flex items-center justify-evenly  bg-green-900">
     <img
     class="rounded-full mr-4 w-[50px] h-[50px]"
-    [src]="worker().image"
+    [src]="worker().image || worker().avatar?.url"
     [alt]="'image of worker ' + worker().firstName + ' ' + worker().lastName"
   />
     <p>{{ worker().firstName }} {{ worker().lastName }}</p>

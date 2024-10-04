@@ -47,14 +47,22 @@ return this._httpClient.post<{ message:string }>(
   }
   createWorker(firstName:string,lastName:string,image:File, randomAvatar:boolean){
     console.log("randomAvatar: ",randomAvatar);
+    console.log("firstName: ",firstName);
+    console.log("lastName: ",lastName)
     if(randomAvatar){
       return this._httpClient.post<{message:string,worker:Worker}>('http://localhost:3000/admin/workers/default',{firstName,lastName});
     }
     const workerData=new FormData();
     workerData.append("firstName",firstName);
     workerData.append("lastName",lastName);
-   workerData.append("image",image,`${firstName} ${lastName}`)
+   workerData.append("image",image,`${firstName} ${lastName}`);
 return this._httpClient.post<{message:string,worker:Worker}>('http://localhost:3000/admin/workers',workerData);
 
+  }
+  removePhoto(id:string){
+this._httpClient.post<{message:string}>('http://localhost:3000/admin/workers/removePhoto',{id}).subscribe({
+  next:(resp)=>console.log(resp.message),
+  error:(err)=>console.log(err)
+})
   }
 }

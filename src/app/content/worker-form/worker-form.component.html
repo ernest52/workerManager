@@ -1,6 +1,6 @@
 
-@if(message){
-  <p class="info">{{message}}</p>
+@if(message.info){
+  <p class="info">{{message.info}}</p>
 }
 <form [formGroup]="form" (ngSubmit)="handleSubmit()" class="creatingForm" enctype="multipart/form-data">
  
@@ -30,7 +30,7 @@
    <button type="button" class='button rounded-lg block mr-auto' (click)="avatarInput.click()"> Choose avatar</button> 
     </div>
     @if(filePath){
-      <p class="info">avatar's preview</p>
+      <p class="info">avatar's {{message.avatar}}</p>
       <img class="w-[100px] h-[100px]" [src]="filePath" />
     }
 
