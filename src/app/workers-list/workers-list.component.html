@@ -1,3 +1,6 @@
 @if(workers().length){ @for(worker of workers();track worker.id){
 <app-worker [worker]="worker" />
-} }@else { isLoading... }
+} }@else {
+  <p class="text-center">Is Loading... </p>
+   
+   }

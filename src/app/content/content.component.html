@@ -1,10 +1,24 @@
 
-@switch ((mode$|async)) {
+@switch ((mode())) {
   @case ("task") {
     <app-task-form/>
   }@case ("worker") {
    <app-worker-form/>
-  }@default {
+  }
+  @case("tasks"){
+    @if(tasks().length){
+    @for(task of tasks();track task.id){
+      <p>{{task.addedBy}}</p>
+      <p>deadline: {{task.deadline}}</p>
+<p> {{task.title}}</p>
+<p> {{task.content}}</p>
+    }
+    }@else {
+      <p>No tasks to show</p>
+    }
+
+  }
+  @default {
     Lorem ipsum dolor sit amet consectetur, adipisicing elit. Non id quibusdam nihil! Nemo veniam quia magni possimus eius sint explicabo expedita velit ab perspiciatis! Atque obcaecati dolores in excepturi nulla.
   }
 }

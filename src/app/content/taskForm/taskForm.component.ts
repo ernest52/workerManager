@@ -88,11 +88,13 @@ workers:new FormControl("",{validators:[Validators.required]})
     console.log("SENT FORM: ",this.form);
     const {value}=this.form
 const newTask:Task={
+  id:Date.now(),
   title:value?.title?value.title:"",
   content:value?.content?value.content:"",
   addedAt:value?.terms?.createdAt?value.terms.createdAt:"",
   deadline:value?.terms?.deadline?value.terms.deadline:"",
-  worker:value?.workers?value.workers:""
+  worker:value?.workers?value.workers:"",
+  addedBy:"admin"
 
 }
 

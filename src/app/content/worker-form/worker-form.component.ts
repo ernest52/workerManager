@@ -38,7 +38,7 @@ _workersRepo=inject(WorkersService);
   firstName:"",
   lastName:"",
 })
-workersList=this._workersRepo.workersSignal();
+
 form=new FormGroup({
 firstName:new FormControl("",{validators:[Validators.required,Validators.minLength(this.rangeValues().firstName.min),Validators.maxLength(this.rangeValues().firstName.max)]}),
 lastName:new FormControl("",{validators:[Validators.required,Validators.minLength(this.rangeValues().lastName.min),Validators.maxLength(this.rangeValues().lastName.max)]}),
