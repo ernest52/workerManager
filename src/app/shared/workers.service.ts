@@ -11,6 +11,7 @@ import { map } from 'rxjs';
 export class WorkersService {
   private _httpClient = inject(HttpClient);
   private _state: RxState<State> = inject(RxState<State>);
+  isLoading=signal<boolean>(false);
   
   constructor() {
     this._state.set(() => ({ error: '', workers: [],content:"main",tasks:[],workerId:null }));
@@ -19,7 +20,7 @@ export class WorkersService {
     return this._state.asReadOnly();
   }
 
-  get tasksSubscription()
+  get tasksObserv()
   {
     this._state.set("tasks",()=>[]);
     

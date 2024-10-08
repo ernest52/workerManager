@@ -8,12 +8,13 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {merge} from 'rxjs';
 import { updateErrorMessageFactory } from "../../shared/utilities/updateErrorMessageFactory";
 import { type Task } from "../../shared/task.model";
+import { LoaderComponent } from "../../shared/loader/loader.component";
 
 
 @Component({
   selector:"app-task-form",
 templateUrl:"./taskForm.component.html",
-imports: [MatFormFieldModule,ReactiveFormsModule],
+imports: [MatFormFieldModule,ReactiveFormsModule,LoaderComponent],
 standalone:true,
 
 
@@ -37,6 +38,7 @@ rangeValues=signal({
   title:{min:5,max:100},
   content:{min:5,max:500}
 })
+isLoading=false;
 message="";
 destroyRef=inject(DestroyRef);
 _workersRepo=inject(WorkersService);
@@ -85,6 +87,7 @@ workers:new FormControl("",{validators:[Validators.required]})
 
 
   handleSubmit(){
+    this.isLoading=true;
     console.log("SENT FORM: ",this.form);
     const {value}=this.form
 const newTask:Task={
@@ -99,8 +102,12 @@ const newTask:Task={
 }
 
    const taskSub= this._workersRepo.createTask(newTask).subscribe({
-      next:(resp)=>this.message=resp.message,
+      next:(resp)=>{
+        this.isLoading=false;
+        this.message=resp.message;
+      },
       error:(err)=>{
+        this.isLoading=false;
         this._workersRepo.setError(err?.error.message||err?.message || "server failed")}
     })
     this.destroyRef.onDestroy(()=>taskSub.unsubscribe())

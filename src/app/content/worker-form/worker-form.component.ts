@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject, signal } from "@angular/core";
-import {  AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
+import {  FormControl, FormGroup, Validators } from "@angular/forms";
 import { ReactiveFormsModule } from "@angular/forms";
 import { WorkersService } from "../../shared/workers.service";
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
@@ -7,13 +7,13 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 
 import {merge} from 'rxjs';
 import { updateErrorMessageFactory } from "../../shared/utilities/updateErrorMessageFactory";
-import { type Task } from "../../shared/task.model";
+import { LoaderComponent } from "../../shared/loader/loader.component";
 
 
 @Component({
   selector:"app-worker-form",
 templateUrl:"./worker-form.component.html",
-imports: [MatFormFieldModule,ReactiveFormsModule],
+imports: [MatFormFieldModule,ReactiveFormsModule,LoaderComponent],
 standalone:true,
 
 
@@ -26,6 +26,7 @@ rangeValues=signal({
   firstName:{min:2,max:15},
   lastName:{min:2,max:15}
 });
+
 randomAvatar=true;
 
 message={
@@ -38,6 +39,7 @@ _workersRepo=inject(WorkersService);
   firstName:"",
   lastName:"",
 })
+isLoading=false;
 
 form=new FormGroup({
 firstName:new FormControl("",{validators:[Validators.required,Validators.minLength(this.rangeValues().firstName.min),Validators.maxLength(this.rangeValues().firstName.max)]}),
@@ -78,10 +80,10 @@ reader.readAsDataURL(file);
 
 
   handleSubmit(){
-    console.log("SENT FORM: ",this.form);
+ 
     const {value}=this.form;
-
-    this._workersRepo.createWorker(<string>value.firstName ,<string>value.lastName ,<File>value.image,this.randomAvatar ).subscribe({
+this.isLoading=true;
+   const sub= this._workersRepo.createWorker(<string>value.firstName ,<string>value.lastName ,<File>value.image,this.randomAvatar ).subscribe({
       next:(resp)=>{
         
         this.message={info:resp.message,avatar:"selected"};
@@ -91,12 +93,13 @@ reader.readAsDataURL(file);
         this.form.patchValue({image:resp.worker.avatar?.url || resp.worker?.image})
         this.filePath=resp.worker.avatar?.url || resp.worker?.image || "";
         this.error.update(()=>({firstName:"",lastName:""}))
+        this.isLoading=false;
       },
       error:(err)=>{
-        console.log(err)
         this._workersRepo.setError(err?.error.message||err?.message || "server response failed")
       }
     })
+    this.destroyRef.onDestroy(()=>sub.unsubscribe());
   
 
   }

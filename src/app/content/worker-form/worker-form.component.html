@@ -1,47 +1,52 @@
 
+@if(isLoading){
+  <app-loader/>
+}@else {
+  
 @if(message.info){
   <p class="info">{{message.info}}</p>
 }
-<form [formGroup]="form" (ngSubmit)="handleSubmit()" class="creatingForm" enctype="multipart/form-data">
+  <form [formGroup]="form" (ngSubmit)="handleSubmit()" class="creatingForm" enctype="multipart/form-data">
  
-  <div class="creatingForm__divider" >
-<label for="name">First Name:</label>
-<input  (blur)="updateFirstNameMessage()" id="name" type="text" formControlName="firstName">
-</div>
-@if (firstName.invalid) {
-  <div class=" bg-red-600 text-center">
-    <mat-error class="text-center">{{error().firstName}}</mat-error>
+    <div class="creatingForm__divider" >
+  <label for="name">First Name:</label>
+  <input  (blur)="updateFirstNameMessage()" id="name" type="text" formControlName="firstName">
   </div>
-
-}
-<div class="creatingForm__divider" >
-  <label for="surname">Last Name:</label>
-  <input  (blur)="updateFirstNameMessage()" id="surname" type="text" formControlName="lastName">
-  </div>
-  @if (lastName.invalid) {
+  @if (firstName.invalid) {
     <div class=" bg-red-600 text-center">
-      <mat-error class="text-center">{{error().lastName}}</mat-error>
+      <mat-error class="text-center">{{error().firstName}}</mat-error>
     </div>
   
   }
-  <div class="creatingForm__divider items-center" >
-    <label for="avatar">avatar:</label>
-    <input style="display:none" (change)="onInsertImage($event)" id="avatar" type="file" #avatarInput/>
-   <button type="button" class='button rounded-lg block mr-auto' (click)="avatarInput.click()"> Choose avatar</button> 
+  <div class="creatingForm__divider" >
+    <label for="surname">Last Name:</label>
+    <input  (blur)="updateFirstNameMessage()" id="surname" type="text" formControlName="lastName">
     </div>
-    @if(filePath){
-      <p class="info">avatar's {{message.avatar}}</p>
-      <img class="w-[100px] h-[100px]" [src]="filePath" />
+    @if (lastName.invalid) {
+      <div class=" bg-red-600 text-center">
+        <mat-error class="text-center">{{error().lastName}}</mat-error>
+      </div>
+    
     }
-
-
-
-   
-    
-    
-
-    <button [disabled]="form.invalid" class='button rounded-lg block ml-auto my-4' [class]="form.invalid?' button--disabled':' hover:text-green-700'"> Submit </button>
-
-
-
-</form>
+    <div class="creatingForm__divider items-center" >
+      <label for="avatar">avatar:</label>
+      <input style="display:none" (change)="onInsertImage($event)" id="avatar" type="file" #avatarInput/>
+     <button type="button" class='button rounded-lg block mr-auto' (click)="avatarInput.click()"> Choose avatar</button> 
+      </div>
+      @if(filePath){
+        <p class="info">avatar's {{message.avatar}}</p>
+        <img class="w-[100px] h-[100px]" [src]="filePath" />
+      }
+  
+  
+  
+     
+      
+      
+  
+      <button [disabled]="form.invalid" class='button rounded-lg block ml-auto my-4' [class]="form.invalid?' button--disabled':' hover:text-green-700'"> Submit </button>
+  
+  
+  
+  </form>
+}
