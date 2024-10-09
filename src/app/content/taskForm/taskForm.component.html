@@ -1,12 +1,10 @@
 @if(isLoading){
   <app-loader/>
 }@else {
-  @if(message){
-    <p class="info">{{message}}</p>
-  }
-  <form [formGroup]="form" (ngSubmit)="handleSubmit()" class="creatingForm">
+
+  <form [formGroup]="form" (ngSubmit)="handleSubmit()" class="holder">
    
-    <div class="creatingForm__divider" >
+    <div class="divider" >
   <label for="title">Title:</label>
   <input  (blur)="updateTitleMessage()" id="title" type="text" formControlName="title">
   </div>
@@ -16,7 +14,7 @@
     </div>
   
   }
-  <div formGroupName="terms" class="creatingForm__divider" (blur)="updateTermsMessage()">
+  <div formGroupName="terms" class="divider" (blur)="updateTermsMessage()">
     <label for="created">created at: </label>
     <input id="created" type="date" formControlName="createdAt">
   
@@ -30,7 +28,7 @@
     </div>
   }
   
-    <div class="creatingForm__divider"> 
+    <div class="divider"> 
       <label for="content">content: </label>
       <textarea  id="content" formControlName="content" (blur)="updateContentMessage()" class="min-w-full max-w-full min-h-28 max-h-28 text-sm"></textarea>
      
@@ -42,7 +40,7 @@
       </div>
     }
       
-     <div class="creatingForm__divider">
+     <div class="divider">
       <label for="workers"> Worker</label>
       <select id="workers" name="workers" formControlName="workers" (blur)="updateWorkersMessage()">
         @for(worker of workersList();track $index){

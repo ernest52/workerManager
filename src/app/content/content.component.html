@@ -1,6 +1,12 @@
 
 
-
+@if(isLoading()){
+<app-loader/>
+}
+@else {
+  @if(info()){
+    <p class="info">{{info()}}</p>
+  }
   @switch ((mode())) {
     @case ("task") {
       <app-task-form/>
@@ -8,20 +14,18 @@
      <app-worker-form/>
     }
     @case("tasks"){
-      @if(isLoading()){
+      <!-- @if(isLoading()){
         <app-loader/>
-      }@else {
+      }@else { -->
         @if(tasks().length){
+          
           @for(task of tasks();track task.id){
-            <p>{{task.addedBy}}</p>
-            <p>deadline: {{task.deadline}}</p>
-      <p> {{task.title}}</p>
-      <p> {{task.content}}</p>
-          }
+        <app-task [task]="task"/>
+        }
           }@else {
             <p>No tasks to show</p>
           }
-      }
+      <!-- } -->
  
   
     }
@@ -29,5 +33,10 @@
       Lorem ipsum dolor sit amet consectetur, adipisicing elit. Non id quibusdam nihil! Nemo veniam quia magni possimus eius sint explicabo expedita velit ab perspiciatis! Atque obcaecati dolores in excepturi nulla.
     }
   }
+
+
+}
+
+
 
 

@@ -8,6 +8,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {merge} from 'rxjs';
 import { updateErrorMessageFactory } from "../../shared/utilities/updateErrorMessageFactory";
 import { LoaderComponent } from "../../shared/loader/loader.component";
+import { ContentService } from "../../shared/content.service";
 
 
 @Component({
@@ -28,18 +29,16 @@ rangeValues=signal({
 });
 
 randomAvatar=true;
-
-message={
-  info:"",
-  avatar:"preview"
-};
+isLoading=false;
+avatar="preview";
 destroyRef=inject(DestroyRef);
 _workersRepo=inject(WorkersService);
+_contentRepo=inject(ContentService);
  error=signal({
   firstName:"",
   lastName:"",
 })
-isLoading=false;
+
 
 form=new FormGroup({
 firstName:new FormControl("",{validators:[Validators.required,Validators.minLength(this.rangeValues().firstName.min),Validators.maxLength(this.rangeValues().firstName.max)]}),
@@ -62,8 +61,7 @@ image:new FormControl({}),
  }
  onInsertImage(event:Event){
   const button=event.target as HTMLInputElement;
-  console.log("BUTTON: ",button?.files);
-  console.dir(button?.files);
+  
   if(button!==null && button.files!==null){
 const file=button.files[0];
 this.form.patchValue({image:file});
@@ -80,24 +78,25 @@ reader.readAsDataURL(file);
 
 
   handleSubmit(){
- 
-    const {value}=this.form;
 this.isLoading=true;
+    const {value}=this.form;
    const sub= this._workersRepo.createWorker(<string>value.firstName ,<string>value.lastName ,<File>value.image,this.randomAvatar ).subscribe({
       next:(resp)=>{
-        
-        this.message={info:resp.message,avatar:"selected"};
+       this.avatar="selected"
+        this._contentRepo.setInfo(resp.message);
         this._workersRepo.addWorkerToManager(resp.worker);
         this.filePath="";
         this.form.reset();
         this.form.patchValue({image:resp.worker.avatar?.url || resp.worker?.image})
         this.filePath=resp.worker.avatar?.url || resp.worker?.image || "";
         this.error.update(()=>({firstName:"",lastName:""}))
-        this.isLoading=false;
+        
       },
       error:(err)=>{
+      
         this._workersRepo.setError(err?.error.message||err?.message || "server response failed")
-      }
+      },
+      complete:()=>this.isLoading=false
     })
     this.destroyRef.onDestroy(()=>sub.unsubscribe());
   

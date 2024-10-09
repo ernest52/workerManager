@@ -7,11 +7,12 @@ import { type Task } from './task.model';
 import { map } from 'rxjs';
 
 
+
 @Injectable({ providedIn: 'root' })
 export class WorkersService {
   private _httpClient = inject(HttpClient);
   private _state: RxState<State> = inject(RxState<State>);
-  isLoading=signal<boolean>(false);
+
   
   constructor() {
     this._state.set(() => ({ error: '', workers: [],content:"main",tasks:[],workerId:null }));
@@ -51,11 +52,19 @@ return this._state.computed((s)=>s.tasks);
   addWorkerToManager(worker:Worker){
 this._state.set("workers",({workers})=>[...workers,worker])
 console.log("CURRENT WORKERS: ",this._state.get("workers"));
+
   }
   createTask(task:Task){
 return this._httpClient.post<{ message:string }>(
   'http://localhost:3000/admin/tasks',{task}
 );
+  }
+  removeTask(id:number){
+   return  this._httpClient.delete<{message:string}>(`http://localhost:3000/admin/tasks?id=${id}`).pipe(map((resp)=>{
+    this._state.set("tasks",({tasks})=>tasks.filter(el=>el.id!==id));
+    this._state.set("workerId",()=>null);
+return resp.message
+   }))
   }
   createWorker(firstName:string,lastName:string,image:File, randomAvatar:boolean){
     console.log("randomAvatar: ",randomAvatar);

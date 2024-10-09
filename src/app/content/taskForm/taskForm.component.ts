@@ -9,6 +9,7 @@ import {merge} from 'rxjs';
 import { updateErrorMessageFactory } from "../../shared/utilities/updateErrorMessageFactory";
 import { type Task } from "../../shared/task.model";
 import { LoaderComponent } from "../../shared/loader/loader.component";
+import { ContentService } from "../../shared/content.service";
 
 
 @Component({
@@ -38,10 +39,11 @@ rangeValues=signal({
   title:{min:5,max:100},
   content:{min:5,max:500}
 })
+
 isLoading=false;
-message="";
 destroyRef=inject(DestroyRef);
 _workersRepo=inject(WorkersService);
+_contentRepo=inject(ContentService);
  error=signal({
   title:"",
   terms:"",
@@ -88,7 +90,6 @@ workers:new FormControl("",{validators:[Validators.required]})
 
   handleSubmit(){
     this.isLoading=true;
-    console.log("SENT FORM: ",this.form);
     const {value}=this.form
 const newTask:Task={
   id:Date.now(),
@@ -103,13 +104,15 @@ const newTask:Task={
 
    const taskSub= this._workersRepo.createTask(newTask).subscribe({
       next:(resp)=>{
-        this.isLoading=false;
-        this.message=resp.message;
+       
+        this._contentRepo.setInfo(resp.message);
       },
       error:(err)=>{
-        this.isLoading=false;
-        this._workersRepo.setError(err?.error.message||err?.message || "server failed")}
+       
+        this._workersRepo.setError(err?.error.message||err?.message || "server failed")},
+        complete:()=> this.isLoading=false
     })
+   
     this.destroyRef.onDestroy(()=>taskSub.unsubscribe())
     this.form.reset({
       title:"",
