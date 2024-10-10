@@ -1,8 +1,8 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { type Worker } from './worker.model';
 import { RxState } from '@rx-angular/state';
-import { type State,type Content } from './state.model';
+import { type State } from './state.model';
 import { type Task } from './task.model';
 import { map } from 'rxjs';
 
@@ -15,7 +15,7 @@ export class WorkersService {
 
   
   constructor() {
-    this._state.set(() => ({ error: '', workers: [],content:"main",tasks:[],workerId:null }));
+    this._state.set(() => ({ error: '', workers: [],tasks:[],workerId:null }));
   }
   get state() {
     return this._state.asReadOnly();
@@ -37,9 +37,7 @@ export class WorkersService {
   get workersSignal() {
     return this._state.computed((s) => s.workers);
   }
-  get contentSignal(){
-    return this._state.computed((s)=>s.content);
-  }
+
 get tasksSignal(){
 return this._state.computed((s)=>s.tasks);
 }
@@ -51,7 +49,7 @@ return this._state.computed((s)=>s.tasks);
   }
   addWorkerToManager(worker:Worker){
 this._state.set("workers",({workers})=>[...workers,worker])
-console.log("CURRENT WORKERS: ",this._state.get("workers"));
+// console.log("CURRENT WORKERS: ",this._state.get("workers"));
 
   }
   createTask(task:Task){
@@ -67,9 +65,9 @@ return resp.message
    }))
   }
   createWorker(firstName:string,lastName:string,image:File, randomAvatar:boolean){
-    console.log("randomAvatar: ",randomAvatar);
-    console.log("firstName: ",firstName);
-    console.log("lastName: ",lastName)
+    // console.log("randomAvatar: ",randomAvatar);
+    // console.log("firstName: ",firstName);
+    // console.log("lastName: ",lastName)
     if(randomAvatar){
       return this._httpClient.post<{message:string,worker:Worker}>('http://localhost:3000/admin/workers/default',{firstName,lastName});
     }
@@ -80,9 +78,7 @@ return resp.message
 return this._httpClient.post<{message:string,worker:Worker}>('http://localhost:3000/admin/workers',workerData);
 
   }
-  setContent(value:Content){
-    this._state.set("content",()=>value);
-      }
+
      
       setError(error: string) {
         this._state.set('error', () => error);
@@ -94,10 +90,5 @@ return this._httpClient.post<{message:string,worker:Worker}>('http://localhost:3
         this._state.set("workerId",()=>id);
       }
 
-//   removePhoto(id:string){
-// this._httpClient.post<{message:string}>('http://localhost:3000/admin/workers/removePhoto',{id}).subscribe({
-//   next:(resp)=>console.log(resp.message),
-//   error:(err)=>console.log(err)
-// })
-//   }
+
 }

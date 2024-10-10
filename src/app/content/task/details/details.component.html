@@ -1,0 +1,19 @@
+@if(isLoading){
+  <div class="holder h-max-[30vh]">
+    <p>Task is being removed ... </p>
+    <app-loader/>
+    </div>
+
+}@else {
+  <div class="holder">
+    <div class="divider">
+      <p>title:  </p> <p class="border-2 border-slate-200 p-2"> {{task().title}}</p>
+      <p>deadline:</p>  <p class="border-2 border-slate-200 p-2">{{task().deadline}}</p>
+    <p>sent by: </p>  <p class="border-2 border-slate-200 p-2">{{task().addedBy}}</p>
+    <p>content: </p>  <p class="border-2 border-slate-200 p-2"> {{task().content}}</p> 
+    
+   </div> 
+  <button (click)="removeTask()"class="button block hover:text-red-700 ml-auto"> Remove</button>
+  </div>
+}
+

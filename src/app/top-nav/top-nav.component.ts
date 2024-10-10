@@ -1,17 +1,17 @@
-import { Component, inject } from '@angular/core';
-import { WorkersService } from '../shared/workers.service';
+import { Component} from '@angular/core';
+
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-top-nav',
   standalone: true,
-  imports: [],
+  imports: [RouterLink],
+  providers:[],
   templateUrl: './top-nav.component.html',
   styleUrl: './top-nav.component.css'
 })
 export class TopNavComponent {
-  _workerRepo=inject(WorkersService);
-  changeMode(value:"worker"|"task"){
-    this._workerRepo.setContent(value);
-  }
+
+
 
 }

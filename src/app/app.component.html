@@ -1,11 +1,7 @@
-@if(error()){
-<app-error [error]="error()" />
-}@else {
+
   <app-top-nav/>
-  <div class="py-4 grid grid-cols-[max-content_1fr] items-start ">
+  <div class="py-4 flex justify-between min-h-[100vh]">
     <app-workers-list class="min-w-[30vw]" />
-<app-content  class=" border-4 border-orange-500 ml-2 h-full min-h-[100vh]"/>
+
+ <router-outlet/>
   </div>
-
-
-}

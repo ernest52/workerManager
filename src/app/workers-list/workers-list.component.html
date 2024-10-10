@@ -4,7 +4,8 @@
  <div class="max-w-[40%] m-auto"> <app-loader class="h-[20px]"/> </div>  
  
   
-}@else {
+}
+@else {
   @if(workers().length){ @for(worker of workers();track worker.id){
     <app-worker [worker]="worker" />
     } }@else {

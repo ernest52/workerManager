@@ -19,13 +19,16 @@ export class WorkersListComponent {
     const sub = this._workersRepo.workers.subscribe({
       next: (resp) => {
         this._workersRepo.setWorkers(resp.workers);
-        this.isLoading=false;
+        this.isLoading=false
       },
       error: (err) => {
+        this.isLoading=false
         this._workersRepo.setError(
           err?.error?.message || err?.message || 'response failed'
         );
+      
       },
+   
     });
     this.destroyRef.onDestroy(() => sub.unsubscribe);
   }

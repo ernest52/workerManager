@@ -2,6 +2,8 @@ import { Component, DestroyRef, inject, input } from '@angular/core';
 import { type Worker } from '../../shared/worker.model';
 import { WorkersService } from '../../shared/workers.service';
 import { ContentService } from '../../shared/content.service';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-worker',
@@ -14,21 +16,20 @@ export class WorkerComponent {
   destroyRef=inject(DestroyRef);
   _workersService=inject(WorkersService);
   _contentService=inject(ContentService);
+  _router=inject(Router);
+ 
   worker = input.required<Worker>();
   _state=this._workersService.state;
-  // isLoading=this._workersService.isLoading;
 
   setWorkerId(){
     this._contentService.setInfo("");
   if(this._state.get("workerId")===this.worker().id){
- 
-    this._workersService.setWorkerId(null);
-   return  this._workersService.setContent("main");
+ this._workersService.setWorkerId(null);
+return this._router.navigate([''])
   }
-// this.isLoading.set(true);
+
 this._contentService.setLoading(true);
   this._workersService.setWorkerId(this.worker().id);
-  this._workersService.setContent("tasks");
     const sub=this._workersService.tasksObserv.subscribe({
   
     error:(err)=>{
@@ -39,7 +40,7 @@ this._contentService.setLoading(true);
     }
   );
     this.destroyRef.onDestroy(()=>sub.unsubscribe());
-    
+ return  this._router.navigate(['/tasks/',this.worker().id])
   }
   details($e:Event){
 $e.stopPropagation();
