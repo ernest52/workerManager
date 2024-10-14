@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import { ChangeDetectionStrategy, Component} from '@angular/core';
 
 import { RouterLink } from '@angular/router';
 
@@ -8,7 +8,8 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink],
   providers:[],
   templateUrl: './top-nav.component.html',
-  styleUrl: './top-nav.component.css'
+  styleUrl: './top-nav.component.css',
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class TopNavComponent {
 

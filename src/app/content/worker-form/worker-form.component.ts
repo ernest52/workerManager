@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from "@angular/core";
 import {  FormControl, FormGroup, Validators } from "@angular/forms";
 import { ReactiveFormsModule } from "@angular/forms";
 import { WorkersService } from "../../shared/workers.service";
@@ -16,6 +16,7 @@ import { ContentService } from "../../shared/content.service";
 templateUrl:"./worker-form.component.html",
 imports: [MatFormFieldModule,ReactiveFormsModule,LoaderComponent],
 standalone:true,
+changeDetection:ChangeDetectionStrategy.OnPush
 
 
   

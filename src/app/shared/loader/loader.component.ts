@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @Component({
@@ -7,5 +7,6 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
   styleUrl:"./loader.component.css",
   standalone: true,
   imports: [MatProgressSpinnerModule],
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class LoaderComponent {}

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, input } from '@angular/core';
 import { type Worker } from '../../shared/worker.model';
 import { WorkersService } from '../../shared/workers.service';
 import { ContentService } from '../../shared/content.service';
@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [],
   templateUrl: './worker.component.html',
+  changeDetection:ChangeDetectionStrategy.OnPush
 
 })
 export class WorkerComponent {
@@ -31,8 +32,7 @@ return this._router.navigate([''])
 this._contentService.setLoading(true);
   this._workersService.setWorkerId(this.worker().id);
     const sub=this._workersService.tasksObserv.subscribe({
-  
-    error:(err)=>{
+   error:(err)=>{
       
       this._workersService.setError(err?.error?.message||"fetching tasks failed")
     },

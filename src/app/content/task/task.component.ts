@@ -1,4 +1,4 @@
-import { Component,inject,input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component,inject,input, OnInit } from '@angular/core';
 
 import { WorkersService } from '../../shared/workers.service';
 
@@ -10,6 +10,7 @@ import { DetailsComponent } from './details/details.component';
   standalone: true,
   imports: [LoaderComponent,DetailsComponent],
   templateUrl: './task.component.html',
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class TaskComponent{
 workerID=input.required<string>();

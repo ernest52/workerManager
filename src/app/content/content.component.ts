@@ -1,4 +1,4 @@
-import { Component,inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component,inject } from '@angular/core';
 import { WorkersService } from '../shared/workers.service';
 
 
@@ -15,6 +15,7 @@ import { ErrorComponent } from '../shared/error/error.component';
   imports: [LoaderComponent,TaskComponent,RouterOutlet,ErrorComponent],
 styleUrl:"./content.component.css",
   templateUrl: './content.component.html',
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class ContentComponent    {
   _contentRepo=inject(ContentService);
