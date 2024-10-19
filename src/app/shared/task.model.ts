@@ -5,5 +5,6 @@ content:string,
 addedAt:string,
 deadline:string,
 worker:string,
-addedBy:string
+addedBy:string,
+error?:string,
 }

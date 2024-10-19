@@ -5,17 +5,20 @@ import { WorkersService } from "../../shared/workers.service";
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {MatFormFieldModule} from '@angular/material/form-field';
 
-import {merge} from 'rxjs';
+import { catchError, debounceTime, EMPTY, merge, tap} from 'rxjs';
 import { updateErrorMessageFactory } from "../../shared/utilities/updateErrorMessageFactory";
 import { type Task } from "../../shared/task.model";
 import { LoaderComponent } from "../../shared/loader/loader.component";
 import { ContentService } from "../../shared/content.service";
 
+import { AsyncPipe } from "@angular/common";
+
+
 
 @Component({
   selector:"app-task-form",
 templateUrl:"./taskForm.component.html",
-imports: [MatFormFieldModule,ReactiveFormsModule,LoaderComponent],
+imports: [MatFormFieldModule,ReactiveFormsModule,LoaderComponent,AsyncPipe],
 standalone:true,
 changeDetection:ChangeDetectionStrategy.OnPush
 
@@ -41,7 +44,7 @@ rangeValues=signal({
   content:{min:5,max:500}
 })
 
-isLoading=false;
+isLoading=signal<boolean>(false);
 destroyRef=inject(DestroyRef);
 _workersRepo=inject(WorkersService);
 _contentRepo=inject(ContentService);
@@ -51,7 +54,7 @@ _contentRepo=inject(ContentService);
   content:"",
   workers:""
 })
-workersList=this._workersRepo.workersSignal();
+workersList$=this._workersRepo.workers$;
 form=new FormGroup({
 title:new FormControl("",{validators:[Validators.required,Validators.minLength(this.rangeValues().title.min),Validators.maxLength(this.rangeValues().title.max)]}),
 terms:new FormGroup({
@@ -73,6 +76,18 @@ workers:new FormControl("",{validators:[Validators.required]})
     {type:"maxlength",message:`this field must have maximum ${this.rangeValues().content.max} characters`}]);
   updateTermsMessage=updateErrorMessageFactory(this.form,this.error, "terms",[{type:"required",message:"this field is required"},{type:"deadLineFromPast",message:"Deadline needs to be later or a the same day what task was created"}]);
   constructor() {
+
+    this._workersRepo.createTask$.pipe(tap({
+      next:(message)=>{console.log("FROM TASKFORM message: ",message);this._contentRepo.setInfo(message);this.isLoading.set(false)},
+      error:(err)=>{
+        console.log("FROM TASKFORM ERROR: ",err);
+        this.isLoading.set(false);
+        this._workersRepo.setError(err);
+this._workersRepo.onNavigate("error");
+      }
+    })).pipe(debounceTime(2000),tap({
+     next:()=> this._contentRepo.setInfo("")
+    })).subscribe();
     merge(this.title.statusChanges, this.title.valueChanges)
       .pipe(takeUntilDestroyed())
       .subscribe(() => this.updateTitleMessage());
@@ -90,7 +105,7 @@ workers:new FormControl("",{validators:[Validators.required]})
 
 
   handleSubmit(){
-    this.isLoading=true;
+    this.isLoading.set(true);
     const {value}=this.form
 const newTask:Task={
   id:Date.now(),
@@ -103,18 +118,9 @@ const newTask:Task={
 
 }
 
-   const taskSub= this._workersRepo.createTask(newTask).subscribe({
-      next:(resp)=>{
-       
-        this._contentRepo.setInfo(resp.message);
-      },
-      error:(err)=>{
-       
-        this._workersRepo.setError(err?.error.message||err?.message || "server failed")},
-        complete:()=> this.isLoading=false
-    })
+
+  this._workersRepo.onAddedTask(newTask);
    
-    this.destroyRef.onDestroy(()=>taskSub.unsubscribe())
     this.form.reset({
       title:"",
       terms: {createdAt:new Date().toISOString().split("T")[0],

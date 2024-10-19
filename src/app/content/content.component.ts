@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component,inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component,inject} from '@angular/core';
 import { WorkersService } from '../shared/workers.service';
 
 
@@ -17,13 +17,13 @@ styleUrl:"./content.component.css",
   templateUrl: './content.component.html',
   changeDetection:ChangeDetectionStrategy.OnPush
 })
-export class ContentComponent    {
+export class ContentComponent  {
   _contentRepo=inject(ContentService);
   _workersRepo=inject(WorkersService);
   info=this._contentRepo.infoSignal;
   isLoading=this._contentRepo.loadingSignal;
-  error=this._workersRepo.errorSignal();
- 
+
+
 
 
 }

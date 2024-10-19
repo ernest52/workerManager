@@ -1,4 +1,4 @@
-@if(isLoading){
+@if(isLoading()){
   <app-loader/>
 }@else {
 
@@ -43,7 +43,8 @@
      <div class="divider">
       <label for="workers"> Worker</label>
       <select id="workers" name="workers" formControlName="workers" (blur)="updateWorkersMessage()">
-        @for(worker of workersList();track $index){
+       
+        @for(worker of workersList$|async;track $index){
         <option [value]="worker.id"> {{worker.firstName}} {{worker.lastName}} </option>
         }
       </select>

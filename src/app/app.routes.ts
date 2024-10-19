@@ -5,6 +5,6 @@ export const routes: Routes = [
   {
     path:"",
     component:ContentComponent,
-    loadChildren:()=>import("./component.routes").then(m=>m.componentRoutes)
+    loadChildren:()=>import("./content.routes").then(m=>m.componentRoutes)
   }
 ];

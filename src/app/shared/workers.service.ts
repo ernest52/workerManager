@@ -1,62 +1,68 @@
 import { inject, Injectable} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, } from '@angular/common/http';
 import { type Worker } from './worker.model';
 import { RxState } from '@rx-angular/state';
 import { type State } from './state.model';
 import { type Task } from './task.model';
-import { map } from 'rxjs';
+import {  catchError, map, mergeMap, Observable, of, Subject, switchMap, tap, throwError, } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 
 @Injectable({ providedIn: 'root' })
 export class WorkersService {
   private _httpClient = inject(HttpClient);
+  private router=inject(Router);
   private _state: RxState<State> = inject(RxState<State>);
-
+  private taskSubject=new Subject<Task>();
+  private workerIdSubject=new Subject<string>();
+workerIdObservable$=this.workerIdSubject.asObservable();
+workerTasks$=this.workerIdObservable$.pipe(switchMap(id=>this._httpClient.get<{tasks:Task[]}>(`http://localhost:3000/admin/tasks?id=${id}`).pipe(map(resp=>resp.tasks),catchError((err)=>{
+  console.log("CATCH ERROR: ",err);
+return of([{error:err?.error?.message||"request failed"}as Task])}))));
+  workers$=this._httpClient.get<{ workers: Worker[] }>('http://localhost:3000/admin/workers').pipe(map(resp=>resp.workers),catchError(this.errorHandler));
   
+ taskObservable$=this.taskSubject.asObservable();
+ createTask$=this.taskObservable$.pipe(mergeMap((task)=>{
+  return this._httpClient.post<{message:string}>('http://localhost:3000/admin/tasks',task).pipe(map((resp)=>{
+return resp.message;
+  }),catchError(this.errorHandler))
+ }),catchError(this.errorHandler));
+
   constructor() {
     this._state.set(() => ({ error: '', workers: [],tasks:[],workerId:null }));
   }
   get state() {
     return this._state.asReadOnly();
   }
+ onNavigate(path:string){
+this.router.navigate([path]);
+ }
+ onAddedTask(task:Task){
+  this.taskSubject.next(task);
+ }
+ onSelectedWorkerId(id:string){
+  console.log("WORKER id: ",id);
+  this.workerIdSubject.next(id);
+ }
+ private errorHandler(err:HttpErrorResponse):Observable<never>{
 
-  get tasksObserv()
-  {
-    this._state.set("tasks",()=>[]);
-    
-   return  this._httpClient.get<{tasks:Task[]}>(`http://localhost:3000/admin/tasks?id=${this._state.get("workerId")}`).pipe(map((resp)=>{
-  if(resp.tasks.length){
-    this._state.set("tasks",()=>resp.tasks.map(el=>({...el,deadline:new Date(el.deadline).toLocaleDateString()})))
-  }
-   }))
-  }
+ const error=`error occured with: ${err?.error?.message||"request failed"}`;
+  return throwError(()=>error )
+
+};
+
   get errorSignal() {
     return this._state.computed((s) => s.error);
   }
-  get workersSignal() {
-    return this._state.computed((s) => s.workers);
-  }
 
-get tasksSignal(){
-return this._state.computed((s)=>s.tasks);
-}
 
-  get workers() {
-    return this._httpClient.get<{ workers: Worker[] }>(
-      'http://localhost:3000/admin/workers'
-    );
-  }
   addWorkerToManager(worker:Worker){
 this._state.set("workers",({workers})=>[...workers,worker])
 // console.log("CURRENT WORKERS: ",this._state.get("workers"));
 
   }
-  createTask(task:Task){
-return this._httpClient.post<{ message:string }>(
-  'http://localhost:3000/admin/tasks',{task}
-);
-  }
+
   removeTask(id:number){
    return  this._httpClient.delete<{message:string}>(`http://localhost:3000/admin/tasks?id=${id}`).pipe(map((resp)=>{
     this._state.set("tasks",({tasks})=>tasks.filter(el=>el.id!==id));
