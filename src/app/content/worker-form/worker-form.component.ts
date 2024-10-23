@@ -5,7 +5,7 @@ import { WorkersService } from "../../shared/workers.service";
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {MatFormFieldModule} from '@angular/material/form-field';
 
-import {merge} from 'rxjs';
+import { delay, merge, tap} from 'rxjs';
 import { updateErrorMessageFactory } from "../../shared/utilities/updateErrorMessageFactory";
 import { LoaderComponent } from "../../shared/loader/loader.component";
 import { ContentService } from "../../shared/content.service";
@@ -30,7 +30,7 @@ rangeValues=signal({
 });
 
 randomAvatar=true;
-isLoading=false;
+isLoading=signal<boolean>(false);
 avatar="preview";
 destroyRef=inject(DestroyRef);
 _workersRepo=inject(WorkersService);
@@ -79,13 +79,13 @@ reader.readAsDataURL(file);
 
 
   handleSubmit(){
-this.isLoading=true;
+this.isLoading.set(true);
     const {value}=this.form;
-   const sub= this._workersRepo.createWorker(<string>value.firstName ,<string>value.lastName ,<File>value.image,this.randomAvatar ).subscribe({
+   const sub= this._workersRepo.createWorker(<string>value.firstName ,<string>value.lastName ,<File>value.image,this.randomAvatar ).pipe(tap({
       next:(resp)=>{
        this.avatar="selected"
+       this.isLoading.set(false);
         this._contentRepo.setInfo(resp.message);
-        this._workersRepo.addWorkerToManager(resp.worker);
         this.filePath="";
         this.form.reset();
         this.form.patchValue({image:resp.worker.avatar?.url || resp.worker?.image})
@@ -94,11 +94,13 @@ this.isLoading=true;
         
       },
       error:(err)=>{
-      
-        this._workersRepo.setError(err?.error.message||err?.message || "server response failed")
+ 
+        this._workersRepo.setError(err?.error.message||err?.message || "server response failed");
+        this._workersRepo.onNavigate("error")
       },
-      complete:()=>this.isLoading=false
-    })
+    }),delay(1500),tap({
+      next:()=>{this._contentRepo.setInfo("");}
+    })).subscribe()
     this.destroyRef.onDestroy(()=>sub.unsubscribe());
   
 

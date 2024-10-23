@@ -5,6 +5,7 @@ import { ContentService } from '../../shared/content.service';
 
 
 
+
 @Component({
   selector: 'app-worker',
   standalone: true,
@@ -23,8 +24,8 @@ export class WorkerComponent {
   _state=this._workersService.state;
 
   setWorkerId(){
-    this._workersService.onSelectedWorkerId(this.worker().id);
- return  this._workersService.onNavigate(`/tasks/${this.worker().id}`)
+    this._workersService.setWorkerId(this.worker().id);
+return  this._workersService.onNavigate(`/tasks/${this.worker().id}`)
   }
   details($e:Event){
 $e.stopPropagation();

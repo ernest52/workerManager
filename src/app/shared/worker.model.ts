@@ -1,4 +1,5 @@
 export interface Worker {
+  message?:string;
   id: string;
   firstName: string;
   lastName: string;

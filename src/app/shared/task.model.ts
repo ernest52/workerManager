@@ -7,4 +7,5 @@ deadline:string,
 worker:string,
 addedBy:string,
 error?:string,
+completed:boolean
 }

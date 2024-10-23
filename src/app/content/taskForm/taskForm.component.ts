@@ -5,7 +5,7 @@ import { WorkersService } from "../../shared/workers.service";
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {MatFormFieldModule} from '@angular/material/form-field';
 
-import { catchError, debounceTime, EMPTY, merge, tap} from 'rxjs';
+import {  debounceTime,merge, tap} from 'rxjs';
 import { updateErrorMessageFactory } from "../../shared/utilities/updateErrorMessageFactory";
 import { type Task } from "../../shared/task.model";
 import { LoaderComponent } from "../../shared/loader/loader.component";
@@ -21,9 +21,6 @@ templateUrl:"./taskForm.component.html",
 imports: [MatFormFieldModule,ReactiveFormsModule,LoaderComponent,AsyncPipe],
 standalone:true,
 changeDetection:ChangeDetectionStrategy.OnPush
-
-
-  
 })
 export class TaskFormComponent{
 
@@ -54,7 +51,7 @@ _contentRepo=inject(ContentService);
   content:"",
   workers:""
 })
-workersList$=this._workersRepo.workers$;
+workersList$=this._workersRepo.state.select("workers");
 form=new FormGroup({
 title:new FormControl("",{validators:[Validators.required,Validators.minLength(this.rangeValues().title.min),Validators.maxLength(this.rangeValues().title.max)]}),
 terms:new FormGroup({
@@ -77,16 +74,19 @@ workers:new FormControl("",{validators:[Validators.required]})
   updateTermsMessage=updateErrorMessageFactory(this.form,this.error, "terms",[{type:"required",message:"this field is required"},{type:"deadLineFromPast",message:"Deadline needs to be later or a the same day what task was created"}]);
   constructor() {
 
-    this._workersRepo.createTask$.pipe(tap({
-      next:(message)=>{console.log("FROM TASKFORM message: ",message);this._contentRepo.setInfo(message);this.isLoading.set(false)},
+    this._workersRepo.createTask$.pipe(takeUntilDestroyed(),tap({
+      next:(message)=>{this._contentRepo.setInfo(message);this.isLoading.set(false); },
       error:(err)=>{
-        console.log("FROM TASKFORM ERROR: ",err);
         this.isLoading.set(false);
         this._workersRepo.setError(err);
 this._workersRepo.onNavigate("error");
       }
     })).pipe(debounceTime(2000),tap({
-     next:()=> this._contentRepo.setInfo("")
+     next:()=> {
+      this._contentRepo.setInfo("");
+      this._workersRepo.onNavigate("");
+     
+     }
     })).subscribe();
     merge(this.title.statusChanges, this.title.valueChanges)
       .pipe(takeUntilDestroyed())
@@ -114,7 +114,8 @@ const newTask:Task={
   addedAt:value?.terms?.createdAt?value.terms.createdAt:"",
   deadline:value?.terms?.deadline?value.terms.deadline:"",
   worker:value?.workers?value.workers:"",
-  addedBy:"admin"
+  addedBy:"admin",
+  completed:false,
 
 }
 

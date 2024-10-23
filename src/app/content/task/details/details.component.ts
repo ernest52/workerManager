@@ -1,29 +1,29 @@
-import { Component, input,inject} from "@angular/core";
+import { Component, input,inject, ChangeDetectionStrategy, signal, DestroyRef} from "@angular/core";
 import {type  Task } from "../../../shared/task.model";
 import { WorkersService } from "../../../shared/workers.service";
 import { ContentService } from "../../../shared/content.service";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
+import { debounceTime, tap } from "rxjs";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 @Component({
   selector:"app-details",
   templateUrl:"./details.component.html",
   standalone:true,
-  imports:[LoaderComponent]
+  imports:[LoaderComponent],
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class DetailsComponent{
   _workersService=inject(WorkersService);
   _contentService=inject(ContentService);
+  destroyRef=inject(DestroyRef);
  task=input.required<Task>()
- isLoading=false;
+ isLoading=signal<boolean>(false);
 
- removeTask(){
-    const confirmed=window.confirm("Do you really want to delete this task?");
+ completeTask(){
+    const confirmed=window.confirm("Do you want to complete this task?");
     if(confirmed){
-      this.isLoading=true;
-      this._workersService.removeTask(this.task().id).subscribe({
-        next:(message)=>this._contentService.setInfo(message),
-        error:(err)=>this._workersService.setError(err?.error?.message||"deleting process failed"),
-        complete:()=>this.isLoading=false
-      })
+
+      this._workersService.completeTask(this.task().id);
     }
   }
 }
