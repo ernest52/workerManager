@@ -7,5 +7,6 @@ export interface Worker {
   avatar?:{
     url:string,
     fileName:string
-  }
+  };
+  status:boolean
 }

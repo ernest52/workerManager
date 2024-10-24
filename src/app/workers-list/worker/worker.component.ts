@@ -29,6 +29,8 @@ return  this._workersService.onNavigate(`/tasks/${this.worker().id}`)
   }
   details($e:Event){
 $e.stopPropagation();
-console.log("SEE DETAILS")
+this._workersService.onNavigate(`workers/${this.worker().id}`);
+this._workersService.setWorkerId(this.worker().id);
+
   }
 }

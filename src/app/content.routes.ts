@@ -1,17 +1,20 @@
 import { Routes } from "@angular/router";
-import { TaskComponent } from "./content/task/task.component";
-import { TaskFormComponent } from "./content/taskForm/taskForm.component";
-import { WorkerFormComponent } from "./content/worker-form/worker-form.component";
 import { ErrorComponent } from "./shared/error/error.component";
+
 export const componentRoutes:Routes=[{
   path:"workers",
-  component:WorkerFormComponent
-},{
+  loadComponent:()=>import("./content/worker-form/worker-form.component").then(m=>m.WorkerFormComponent)
+},
+{
+  path:"workers/:id",
+  loadComponent:()=>import("./content/workerDetails/workerDetails.component").then(m=>m.WorkerDetails)
+},
+{
   path:"tasks",
-  component:TaskFormComponent
+  loadComponent:()=>import("./content/taskForm/taskForm.component").then(m=>m.TaskFormComponent)
 },{
   path:"tasks/:workerID",
-  component:TaskComponent
+  loadComponent:()=>import("./content/task/task.component").then(m=>m.TaskComponent)
 },{
   path:"error",
   component:ErrorComponent

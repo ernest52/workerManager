@@ -31,7 +31,7 @@ return resp.message;
  }),catchError(this.errorHandler));
 
   constructor() {
-    this._state.set(() => ({ error: '',workerId:null }));
+    this._state.set(() => ({ error: '' }));
     this._state.connect("workers",this.workers$);
   }
   get state() {
@@ -107,19 +107,19 @@ return this._httpClient.post<{message:string,worker:Worker}>('http://localhost:3
       // setWorkers(workers: Worker[]) {
       //   this._state.set('workers', () => workers);
       // }
-      setWorkerId(id:string|null){
+      setWorkerId(id:string){
+        // this._state.set({tasks:[]});
+        const stateWorkerId=this._state.get("workerId");
+       (!stateWorkerId||stateWorkerId!==id)&&this._state.set({workerId:id});
 
-     this._state.connect("tasks",this._httpClient.get<{tasks:Task[]}>(`http://localhost:3000/admin/tasks?id=${id}`).pipe(tap({
-          next:(resp)=>{
-            // console.log("RESPONSE FROM SERVICE TASKS: ",resp.tasks)
-            this._state.set("tasks",()=>resp.tasks.map(el=>({...el,deadline:new Date(el.deadline).toLocaleDateString()})))
-    },
-      error:(err)=>{
+ 
+  this._state.connect("tasks",this._httpClient.get<{tasks:Task[]}>(`http://localhost:3000/admin/tasks?id=${id}`).pipe(tap({
+error:(err)=>{
 this.setError(err?.error?.message||"request failed");
 this.onNavigate("error");
-      }}),map(()=>{
-return this._state.get("tasks");
-      })))
+}})),(state,emited)=>emited.tasks.map(el=>({...el,deadline:new Date(el.deadline).toLocaleDateString()})))
+
+    
 
       }
 

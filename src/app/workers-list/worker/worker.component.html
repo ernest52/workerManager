@@ -11,6 +11,6 @@
  
   <div class="flex justify-between items-center my-3 ">
     <button class="button" (click)="details($event)">See details</button>
-    <p class="text-yellow-900">Status: <span >Online</span></p>
+    <p class="text-yellow-900">Status: <span >{{worker().status?"online":"offline"}}</span></p>
   </div>
 </div>
