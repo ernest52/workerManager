@@ -1,0 +1,27 @@
+@if(workers$|async){
+@if(workers().length){
+  @for(worker of workers();track worker.id){
+    <app-worker [worker]="worker" />
+ 
+}}@else {
+  <p> There is no workers to show</p>
+}
+
+}@else if(isLoading()){
+ 
+  <p class="text-slate-200">Workers are being loaded: </p>
+<div class="max-w-[40%] m-auto"> <app-loader class="h-[20px]"/> </div>  
+
+
+}
+
+
+
+  
+
+
+    
+   
+    
+
+

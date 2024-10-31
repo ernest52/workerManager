@@ -1,0 +1,36 @@
+/* You can add global styles to this file, and also import other style files */
+@import "../node_modules/@angular/material/prebuilt-themes/magenta-violet.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,*::after,*::before{
+  padding: 0;
+  margin:0;
+}
+@layer base{
+  input,select,textarea{
+    @apply  bg-purple-900 outline-none focus-visible:outline-none
+  }
+}
+@layer components{
+  .button{
+    @apply border-2 p-2
+  }
+
+  .button--disabled{
+    @apply border-gray-600 text-gray-600
+  }
+  .holder{
+    @apply bg-purple-950 text-slate-200  p-4 m-4
+  }
+  .divider{
+    @apply grid grid-cols-[20%_1fr] gap-y-4 gap-x-2  my-4;
+  }
+  .info{
+    @apply bg-green-600 text-slate-200 text-center m-4 p-2
+  }
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

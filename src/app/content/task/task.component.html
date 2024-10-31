@@ -1,0 +1,22 @@
+<div>
+
+  @if(tasks$|async){
+    @if(error){
+      <p>{{error}}</p>
+    }@else {
+      @if(task().length){
+        @for(task of task();track task.id){
+     
+          <app-details [task]="task"/>
+        }
+      }@else {
+        <p>No tasks to show</p>
+      }
+    }
+  
+  }@else {
+    <app-loader/>
+  }
+</div>
+
+

@@ -1,0 +1,22 @@
+
+
+
+  @if(isLoading()){
+    <app-loader/>
+    }
+
+    @else {
+      @if(info()){
+        <p class="info">{{info()}}</p>
+      }
+    
+      <router-outlet/>
+    
+    }
+
+
+
+
+
+
+
