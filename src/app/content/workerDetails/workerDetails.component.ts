@@ -1,15 +1,14 @@
-import{ Component, DestroyRef, inject, Input, OnInit, signal, WritableSignal} from "@angular/core";
+import{ ChangeDetectionStrategy, Component, DestroyRef, inject, Input, OnChanges, OnInit, signal, SimpleChanges, WritableSignal} from "@angular/core";
 import { WorkersService } from "../../shared/workers.service";
 import { RxState } from "@rx-angular/state";
-import { Worker } from "../../shared/worker.model";
 import { select } from "@rx-angular/state/selections";
 import { catchError, combineLatest, delayWhen, EMPTY, map, scan, switchMap, timer } from "rxjs";
 import { CommonModule } from "@angular/common";
 import { Task } from "../../shared/task.model";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { HttpClient } from "@angular/common/http";
 import { retryWhen } from "rxjs";
 import { DetailedBlock } from "./detailedBlock/detailedBlock";
+import { LoaderComponent } from "../../shared/loader/loader.component";
 interface Address{
   country:string;
   city:string;
@@ -35,12 +34,14 @@ interface State{
   selector:"app-worker-details",
   templateUrl:"./workerDetails.component.html",
   standalone:true,
-  imports:[CommonModule,DetailedBlock],
-  providers:[RxState]
+  imports:[CommonModule,DetailedBlock,LoaderComponent],
+  providers:[RxState],
+  changeDetection:ChangeDetectionStrategy.OnPush
 
 })
-export  class WorkerDetails implements OnInit{
+export  class WorkerDetails implements OnInit,OnChanges{
 @Input({required:true}) id!:string;
+
 _destroyRef=inject(DestroyRef);
 _workersService=inject(WorkersService);
 _httpClient=inject(HttpClient);
@@ -48,15 +49,18 @@ _state:RxState<State>=inject(RxState<State>);
 worker$=this._state.select("userData");
 workerId$=this._workersService.state.select("workerId");
 workers$=this._workersService.state.select("workers");
-tasks$=this._workersService.state.select("tasks");
+
 details=signal<{name:string,address:Address[],tasks:Task[],showDetails:boolean}>({name:"",address:[],tasks:[],showDetails:false});
 info:string="";
+isLoading=signal<boolean>(false)
 
 removeTask(id:number){
-  
+  this.isLoading.set(true);
   this._state.connect("userData",this._workersService.removeTask(id).pipe(map(message=>{
     this._state.set("userData",({userData})=>({...userData,tasks:userData.tasks.filter(el=>el.id!==id)}));
     this.info=message;
+    this.details.set({name:"",address:[],tasks:[],showDetails:false});
+    this.isLoading.set(false);
     return {...this._state.get("userData")}
   })))
 
@@ -81,15 +85,19 @@ this.detailsUpdater("name",value);
 showDetails(id:number){
  
   if(this.details().name==="tasks"){
+    if(this.details().showDetails) return this.details.update(obj=>({...obj,showDetails:false}))
     this.details.update(cur=>({...cur,tasks:[cur.tasks.find(el=>el.id===id)!],showDetails:true}));
 
-    
   }
   
 
 }
 
+ngOnChanges(changes:SimpleChanges){
+ this.details.set({name:"",address:[],tasks:[],showDetails:false});
+}
 ngOnInit():void{
+ 
   this._state.connect("userData",combineLatest([this.workers$,this.workerId$]).pipe(select(switchMap(([workers,workerId])=>{
   
    return  this._httpClient.get<{tasks:Task[],address:Address[]}>(`http://localhost:3000/admin/tasks?id=${workerId}&address=true`).pipe(map(resp=>{
@@ -104,7 +112,7 @@ ngOnInit():void{
       address:resp.address
      }
    }
- 
+ console.count("workerDetails computes...");
    const userData={worker:detailedWorker,tasks:resp.tasks};
    return userData
    }),retryWhen((error)=>error.pipe(scan((acc,err)=>{

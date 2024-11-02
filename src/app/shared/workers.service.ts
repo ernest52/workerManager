@@ -119,7 +119,6 @@ return this._httpClient.post<{message:string,worker:Worker}>('http://localhost:3
         const stateWorkerId=this._state.get("workerId");
        (!stateWorkerId||stateWorkerId!==id)&&this._state.set({workerId:id});
 
- 
   this._state.connect("tasks",this._httpClient.get<{tasks:Task[]}>(`http://localhost:3000/admin/tasks?id=${id}`).pipe(tap({
 error:(err)=>{
 this.setError(err?.error?.message||"request failed");
