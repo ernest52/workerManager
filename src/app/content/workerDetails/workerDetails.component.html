@@ -60,7 +60,7 @@
             <p>There are {{tasks.length}}  {{details().name}} to show</p>
             @for(task of tasks; track task.id){
            
-              <app-detailed-block [task]="task" [t]="isLoading()">
+              <app-detailed-block [task]="task" [t]="isLoading()" >
                 @if (isLoading()) {
                   <div ngProjectAs="details">
                     <p class="my-3"> task is being removed...</p>
@@ -86,7 +86,20 @@
       
          </div>
         <ng-template #addresses>
-          addresses will be here
+          <!-- ADDRESSES  -->
+        <div *ngIf="details().address.length as amount; else addressEmpty"> 
+<p>There are {{amount}} addresses to show </p> 
+@for (address of details().address; track $index) {
+  <app-detailed-block [address]="address">
+    @if ($first) {
+      <p ngProjectAs="details"> Main address</p>
+    }
+    </app-detailed-block>
+}
+      </div>
+        <ng-template #addressEmpty>
+          <p> No addresses to show</p>
+         </ng-template>
         </ng-template>
    
   

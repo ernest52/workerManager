@@ -4,18 +4,13 @@ import { RxState } from "@rx-angular/state";
 import { select } from "@rx-angular/state/selections";
 import { catchError, combineLatest, delayWhen, EMPTY, map, scan, switchMap, timer } from "rxjs";
 import { CommonModule } from "@angular/common";
-import { Task } from "../../shared/task.model";
+import {type  Task } from "../../shared/task.model";
+import {type Address} from "../../shared/address.model";
 import { HttpClient } from "@angular/common/http";
 import { retryWhen } from "rxjs";
 import { DetailedBlock } from "./detailedBlock/detailedBlock";
 import { LoaderComponent } from "../../shared/loader/loader.component";
-interface Address{
-  country:string;
-  city:string;
-   street:string;
-  zipCode:string;
 
-}
 interface DetailedWorker{
 name: string;
  image: string;
@@ -69,12 +64,14 @@ removeTask(id:number){
 createUpdater=<T>(sg:WritableSignal<T>)=>
 <K extends keyof T>(prop:K,value:T[K])=>sg.update(cur=>({...cur,[prop]:value}));
 detailsUpdater=this.createUpdater(this.details);
+
 setDetails(value:string){
   const userData=this._state.get("userData");
 this.detailsUpdater("name",value);
  if(value==="address"){
   this.detailsUpdater("address",userData.worker.address);
-  this.detailsUpdater("tasks",[])
+  this.detailsUpdater("tasks",[]);
+  // console.log("this.details(): ",this.details());
  }else{
   this.detailsUpdater("tasks",userData.tasks);
   this.detailsUpdater("address",[]);
@@ -112,7 +109,7 @@ ngOnInit():void{
       address:resp.address
      }
    }
- console.count("workerDetails computes...");
+//  console.count("workerDetails computes...");
    const userData={worker:detailedWorker,tasks:resp.tasks};
    return userData
    }),retryWhen((error)=>error.pipe(scan((acc,err)=>{
