@@ -2,22 +2,22 @@
 
 
   <p  class="info"*ngIf="info">{{info}}</p>
-  <div *ngIf="worker$|async as worker" class="bg-green-950 text-slate-200 p-2">
+  <div *ngIf="worker$|async as worker" class="bg-purple-950 text-slate-200 p-2">
  
-    <div class=" bg-red-800 p-4 my-4">
-      <div class="grid grid-cols-2">
+    <div class="  p-4 my-4">
+      <div class="grid  min-[450px]:grid-cols-2">
         <img [src]="worker.worker.image" [alt]="worker.worker.name "  class="rounded-[100vh]  w-[40%] m-auto"/>
         <div class=" flex flex-col">
           <h2 class="uppercase text-lg text-center  border-b-2 border-slate-400  p-2">{{worker.worker.name}}</h2>
-        <h3 class=" bg-green-400 grid grid-cols-[max-content_1fr] items-baseline p-2 mt-2"> status: <p class="border-2 p-3 ml-2 inline-block ">{{worker.worker.status}}</p></h3>
+        <h3 class="  grid min-[350px]:grid-cols-[max-content_1fr] min-[350px]:items-baseline p-2 mt-2"> status: <p class="ml-2 inline-block ">{{worker.worker.status}}</p></h3>
         </div>
           
         
       </div>
-      <div class="grid grid-cols-2 my-3">
-        <button  (click)="setDetails('address')" class="border-green-700  rounded-full button  "> See address </button>
+      <div class="grid min-[400px]:grid-cols-2 my-3 ">
+        <button  (click)="setDetails('address')" class="block border-green-700 rounded-full button max-[400px]:my-1 min-[400px]:mx-1"> See address </button>
            
-        <button  (click)="setDetails('tasks')" *ngIf="worker.tasks.length" class="border-green-700  rounded-full button"> See Tasks </button>
+        <button  (click)="setDetails('tasks')" *ngIf="worker.tasks.length" class="border-green-700  rounded-full  button max-[400px]:my-1 min-[400px]:mx-1"> See Tasks </button>
          </div>
   
      
@@ -38,8 +38,10 @@
                   </div>
                 }@else {
                  
-                    <button (click)="showDetails(task.id)" class="button mx-2 rounded-full"> Details</button>
-                    <button (click)="removeTask(task.id)" class="button  rounded-full">Remove</button>
+                    <button (click)="showDetails(task.id)" class="button rounded-full
+                    max-[430px]:my-2 max-[430px]:mx-0 w-full my-1"> Details</button>
+                    <button (click)="removeTask(task.id)" class="button rounded-full
+                    max-[430px]:my-2 max-[430px]:mx-0 w-full my-1">Remove</button>
                   
 
                 }
@@ -67,9 +69,13 @@
                     <app-loader  />
                   </div>
                 }@else {
-                
-                    <button (click)="showDetails(task.id)" class="button mx-2 rounded-full"> Details</button>
-                    <button (click)="removeTask(task.id)" class="button  rounded-full" >Remove</button>
+                   
+                      <button (click)="showDetails(task.id)" class="button rounded-full
+                      max-[430px]:my-2 max-[430px]:mx-0 w-full my-1">Details</button>
+                      <button  (click)="removeTask(task.id)" class="button rounded-full
+                      max-[430px]:my-2 max-[430px]:mx-0 w-full my-1" >Remove</button>
+                   
+                   
                  
                 }
                 

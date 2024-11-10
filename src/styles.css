@@ -12,20 +12,24 @@
   input,select,textarea{
     @apply  bg-purple-900 outline-none focus-visible:outline-none
   }
+  .divider input{
+    @apply max-[220px]:w-[100%]
+  }
 }
 @layer components{
   .button{
-    @apply border-2 p-2
+    @apply border-2 p-2 
   }
+
 
   .button--disabled{
     @apply border-gray-600 text-gray-600
   }
   .holder{
-    @apply bg-purple-950 text-slate-200  p-4 m-4
+    @apply bg-purple-950 text-slate-200  p-0  m-0 min-[350px]:p-4 min-[350px]:m-4
   }
   .divider{
-    @apply grid grid-cols-[20%_1fr] gap-y-4 gap-x-2  my-4;
+    @apply grid min-[400px]:grid-cols-[20%_1fr] gap-y-4  gap-x-2  min-[350px]:my-4;
   }
   .info{
     @apply bg-green-600 text-slate-200 text-center m-4 p-2

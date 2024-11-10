@@ -2,11 +2,11 @@
   <app-loader/>
 }@else {
 
-  <form [formGroup]="form" (ngSubmit)="handleSubmit()" class="holder ">
+  <form [formGroup]="form" (ngSubmit)="handleSubmit()" class="holder  ">
    
     <div class="divider" >
   <label for="title">Title:</label>
-  <input  (blur)="updateTitleMessage()" id="title" type="text" formControlName="title">
+  <input (blur)="updateTitleMessage()" id="title" type="text" formControlName="title"/>
   </div>
   @if (title.invalid) {
     <div class=" bg-red-600 text-center">

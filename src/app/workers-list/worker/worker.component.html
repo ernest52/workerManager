@@ -1,5 +1,5 @@
-<div (click)="setWorkerId()" class="bg-purple-950 w-[30vw] my-5  text-slate-200 p-2 cursor-pointer" >
-  <div class="flex items-center justify-evenly  bg-green-900">
+<div (click)="setWorkerId()" class="w-full min-[400px]:w-[70%] min-[400px]:mx-[auto]  bg-purple-950 sm:w-[30vw] my-5  text-slate-200 p-2 cursor-pointer" >
+  <div class="flex items-center justify-evenly  bg-green-900 flex-col min-[300px]:flex-row" >
     <img
     class="rounded-full mr-4 w-[50px] h-[50px]"
     [src]="worker().image || worker().avatar?.url"
@@ -9,8 +9,8 @@
   </div>
 
  
-  <div class="flex justify-between items-center my-3 ">
+  <div class="flex justify-between items-center my-3 flex-col min-[300px]:flex-row">
     <button class="button" (click)="details($event)">See details</button>
-    <p class="text-yellow-900">Status: <span >{{worker().status?"online":"offline"}}</span></p>
+    <p [class]="worker().status?'text-green-900':'text-yellow-900'">Status: <span >{{worker().status?"online":"offline"}}</span></p>
   </div>
 </div>

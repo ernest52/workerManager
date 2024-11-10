@@ -7,6 +7,7 @@ import { TaskComponent } from './task/task.component';
 import { ContentService } from '../shared/content.service';
 import { RouterOutlet } from '@angular/router';
 import { ErrorComponent } from '../shared/error/error.component';
+import { classNames } from '@angular/cdk/schematics';
 
 
 @Component({
@@ -15,7 +16,9 @@ import { ErrorComponent } from '../shared/error/error.component';
   imports: [LoaderComponent,TaskComponent,RouterOutlet,ErrorComponent],
 styleUrl:"./content.component.css",
   templateUrl: './content.component.html',
-  changeDetection:ChangeDetectionStrategy.OnPush
+  changeDetection:ChangeDetectionStrategy.OnPush,
+ 
+  
 })
 export class ContentComponent  {
   _contentRepo=inject(ContentService);
