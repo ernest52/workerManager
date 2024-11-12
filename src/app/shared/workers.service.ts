@@ -63,7 +63,7 @@ this.router.navigate([path]);
     return this._state.computed((s) => s.error);
   }
 
-  completeTask(id:number){
+  completeTask(id:string){
 
     this._state.connect("tasks",this._httpClient.patch<{message:string,}>(`http://localhost:3000/admin/tasks`,{id}).pipe(tap({
       next:(resp)=>{
@@ -81,7 +81,7 @@ return this._state.get("tasks").map((el)=>el.id===id?{...el,completed:true}:el)
 
   }
 
-  removeTask(id:number){
+  removeTask(id:string){
    return  this._httpClient.delete<{message:string}>(`http://localhost:3000/admin/tasks?id=${id}`).pipe(map((resp)=>{
     this._state.set("tasks",({tasks})=>tasks.filter(el=>el.id!==id));
    

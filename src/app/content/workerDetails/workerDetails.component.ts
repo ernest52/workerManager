@@ -47,17 +47,17 @@ workers$=this._workersService.state.select("workers");
 
 details=signal<{name:string,address:Address[],tasks:Task[],showDetails:boolean}>({name:"",address:[],tasks:[],showDetails:false});
 info:string="";
-isLoading=signal<boolean>(false)
+isLoading=signal<{status:boolean,id:string}>({status:false,id:''})
 
-removeTask(id:number){
-  this.isLoading.set(true);
-  this._state.connect("userData",this._workersService.removeTask(id).pipe(map(message=>{
-    this._state.set("userData",({userData})=>({...userData,tasks:userData.tasks.filter(el=>el.id!==id)}));
-    this.info=message;
-    this.details.set({name:"",address:[],tasks:[],showDetails:false});
-    this.isLoading.set(false);
-    return {...this._state.get("userData")}
-  })))
+removeTask(id:string){
+  this.isLoading.set({status:true,id});
+  // this._state.connect("userData",this._workersService.removeTask(id).pipe(map(message=>{
+  //   this._state.set("userData",({userData})=>({...userData,tasks:userData.tasks.filter(el=>el.id!==id)}));
+  //   this.info=message;
+  //   this.details.set({name:"",address:[],tasks:[],showDetails:false});
+  //   this.isLoading.set({status:false,id:""});
+  //   return {...this._state.get("userData")}
+  // })))
 
 }
 
@@ -79,7 +79,7 @@ this.detailsUpdater("name",value);
 
 
 }
-showDetails(id:number){
+showDetails(id:string){
  
   if(this.details().name==="tasks"){
     if(this.details().showDetails) return this.details.update(obj=>({...obj,showDetails:false}))
@@ -111,6 +111,7 @@ ngOnInit():void{
    }
 //  console.count("workerDetails computes...");
    const userData={worker:detailedWorker,tasks:resp.tasks};
+   console.log("USER DATA: ",userData.tasks);
    return userData
    }),retryWhen((error)=>error.pipe(scan((acc,err)=>{
 if(acc===3) throw err;

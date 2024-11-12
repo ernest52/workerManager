@@ -1,7 +1,7 @@
 
-<div class=" bg-orange-600 my-3 p-3 max-[400px]:p-0 max-[400px]:w-full">
+<div class=" border-2 border-purple-600 my-3 p-3 max-[400px]:p-0 max-[400px]:w-full">
   <div>
-  <div class="grid grid-cols-1" *ngIf="!isLoading">
+  <div class="grid grid-cols-1" *ngIf="task()?.id!==removingID()" >
 
     <div *ngIf="task()?.title" class="bg-sky-500 flex items-center justify-center my-2 flex-col  ">
       <p>title: {{task()?.title}}</p>

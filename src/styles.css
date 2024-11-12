@@ -18,12 +18,12 @@
 }
 @layer components{
   .button{
-    @apply border-2 p-2 
+    @apply block border-b-2 text-slate-300 border-green-300  max-[400px]:my-1 min-[400px]:mx-1 px-2 py-1 min-[250px]:p-2 hover:border-green-700  hover:text-slate-200
   }
 
 
   .button--disabled{
-    @apply border-gray-600 text-gray-600
+    @apply border-gray-600 text-gray-600 hover:border-gray-600 hover:text-gray-600
   }
   .holder{
     @apply bg-purple-950 text-slate-200  p-0  m-0 min-[350px]:p-4 min-[350px]:m-4

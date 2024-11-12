@@ -108,7 +108,7 @@ this._workersRepo.onNavigate("error");
     this.isLoading.set(true);
     const {value}=this.form
 const newTask:Task={
-  id:Date.now(),
+  id:String(Date.now()),
   title:value?.title?value.title:"",
   content:value?.content?value.content:"",
   addedAt:value?.terms?.createdAt?value.terms.createdAt:"",
